@@ -162,6 +162,28 @@ void Anim::recenter() {
     setPosition(0, 0, m_z);
 }
 
+std::pair<float, float> Anim::frameOffset(int seq, int index) const {
+    if (index < 0 || index >= frameCount(seq))
+        return {0.0f, 0.0f};
+    const auto& f = m_desc->sequences[static_cast<std::size_t>(seq)].frames[static_cast<std::size_t>(index)];
+    const std::size_t i = static_cast<std::size_t>(f.source) - 1;
+    if (i >= m_offsets.size())
+        return {0.0f, 0.0f};
+    return {static_cast<float>(m_offsets[i].x), static_cast<float>(m_offsets[i].y)};
+}
+
+void Anim::setFrameOffset(int seq, int index, float x, float y) {
+    if (index < 0 || index >= frameCount(seq))
+        return;
+    const auto& f = m_desc->sequences[static_cast<std::size_t>(seq)].frames[static_cast<std::size_t>(index)];
+    const std::size_t i = static_cast<std::size_t>(f.source) - 1;
+    if (i >= m_offsets.size())
+        return;
+    m_offsets[i].x = static_cast<std::int16_t>(x);
+    m_offsets[i].y = static_cast<std::int16_t>(y);
+    markChanged();
+}
+
 void Anim::pause(bool on) {
     // 0x447b50: counts motion and playback; HC clamps both at 0. Unpausing
     // playback from 1 clears "started", so the frame shows for a whole duration.

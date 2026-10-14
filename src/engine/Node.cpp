@@ -139,6 +139,10 @@ void Node::updateFrame(bool force) {
         m_forceRedraw = true;
     if (m_pauseCount == 0) {
         const std::uint32_t delta = std::min(m_clock.elapsed(m_engine.ticks()), m_maxDelta ? m_maxDelta : UINT32_MAX);
+        if (m_camSx != 0.0f || m_camSy != 0.0f) { // the view's mover, as the elements' (0x4932a0)
+            m_camX += m_camSx * static_cast<float>(delta);
+            m_camY += m_camSy * static_cast<float>(delta);
+        }
         for (Element* e : std::vector<Element*>(m_elements)) {
             if (std::ranges::find(m_elements, e) == m_elements.end())
                 continue; // removed by an earlier element's update

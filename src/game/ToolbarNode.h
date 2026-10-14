@@ -141,6 +141,7 @@ public:
     std::string horseNameSound() const;      // 0x41e670: "DB0%d"
     bool isVoiceChannelBusy() const;         // 0x41e8c0
     bool voicePlaying() const { return m_voicePlaying; } // +0x17C
+    bool delayedVoicePending() const { return !m_delayedVoice.empty(); } // +0x180 set
     void playHelpHint();                     // 0x41e8f0
     bool checkAllMissionsDone();             // 0x41e7e0
     void choosePagerMessage();               // 0x41df10

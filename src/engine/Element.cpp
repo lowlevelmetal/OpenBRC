@@ -49,13 +49,23 @@ void Element::pause(bool on) {
         --m_motionPause;
 }
 
-void Element::setVelocityPerUpdate(float dx, float dy, float dz) { m_vx = dx, m_vy = dy, m_vz = dz; }
+void Element::setVelocityPerUpdate(float dx, float dy, float dz) {
+    // 0x467230: per-update mode; an all-zero vector stops the mover.
+    m_vx = dx, m_vy = dy, m_vz = dz;
+    m_moving = dx != 0.0f || dy != 0.0f || dz != 0.0f;
+    if (m_moving)
+        m_speedMode = false;
+}
 
 void Element::setSpeed(float x, float y, float z) {
-    // 0x467290: units per second, stored per millisecond.
-    m_sx = x * 0.001f;
-    m_sy = y * 0.001f;
-    m_sz = z * 0.001f;
+    // 0x467290: units per second, stored per millisecond; an all-zero vector
+    // stops the mover. The mover uses one mode at a time (+0x1e).
+    m_sx = static_cast<float>(x * 0.001);
+    m_sy = static_cast<float>(y * 0.001);
+    m_sz = static_cast<float>(z * 0.001);
+    m_moving = x != 0.0f || y != 0.0f || z != 0.0f;
+    if (m_moving)
+        m_speedMode = true;
 }
 
 void Element::link(Node* node) {
@@ -81,8 +91,11 @@ void Element::update(std::uint32_t elapsedMs) {
     // Mover tick (0x468ef0): unless motion is paused or the element has no layer.
     if (m_motionPause != 0 || !m_node)
         return;
+    if (!m_moving)
+        return;
     const float dt = static_cast<float>(elapsedMs);
-    const float dx = m_vx + m_sx * dt, dy = m_vy + m_sy * dt, dz = m_vz + m_sz * dt;
+    const float dx = m_speedMode ? m_sx * dt : m_vx, dy = m_speedMode ? m_sy * dt : m_vy,
+                dz = m_speedMode ? m_sz * dt : m_vz;
     if (dx != 0 || dy != 0 || dz != 0)
         move(dx, dy, dz);
 }

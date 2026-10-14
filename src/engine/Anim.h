@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 namespace brc::engine {
@@ -55,9 +56,31 @@ public:
     // ORs `flags` into a frame's flags. The description is this anim's own
     // copy; HCRolloverButton::Init (0x40ed80) marks button frames this way.
     void addFrameFlags(int seq, int frame, std::uint32_t flags);
+    // ORs `flags` into the HCAn header flags (anim+0x118), e.g. 8 = keep depth
+    // (the tack room's "tackOn", 0x42c550).
+    void addHeaderFlags(std::uint32_t flags) { m_desc->flags |= flags; }
+    // The Smacker canvas the current frame was decoded into, for scenes that
+    // paint into it (Grooming 0x414e30 / 0x415020 lock the frame canvas);
+    // null for still-image anims. Decoding the frame again repaints it.
+    Image8* smackerCanvas() { return m_smk ? &m_canvas : nullptr; }
+    // Sequence player vt+0x18 (0x47a270) SetTimeMode: true = frames last their
+    // duration (as loaded), false = one frame per world update (the race's
+    // gaits); clears "started". Kept in this anim's copy of header flag 1.
+    void setTimeMode(bool milliseconds) {
+        if (milliseconds)
+            m_desc->flags |= formats::anim_flags::kTimeBased;
+        else
+            m_desc->flags &= ~formats::anim_flags::kTimeBased;
+        m_started = false;
+    }
     // 0x449e40: every frame offset becomes (-w/2, -h/2) of the current image
     // and the position (0, 0).
     void recenter();
+    // A frame's offset (Frame +8/+0xc; Frame vt+0xc SetOffset 0x479d30).
+    // Offsets are kept per frame source, so frames sharing a source move
+    // together (no anim the game moves this way shares one).
+    std::pair<float, float> frameOffset(int seq, int index) const;
+    void setFrameOffset(int seq, int index, float x, float y);
 
     // --- ownership --------------------------------------------------------------
     Node* owner() const { return m_owner; } // +0x114: receives the callbacks

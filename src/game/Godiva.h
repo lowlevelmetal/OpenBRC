@@ -52,6 +52,9 @@ struct Session {
     std::uint16_t desktopHorse = 1;        // 0x348
     std::uint16_t saveOnQuit = 0;          // 0x34A
     std::uint16_t field34C = 0;            // 0x34C: cleared by GotoNode
+    // Not in the app object: the global [0x809b00], set by FinalPayoff
+    // (0x411810); the next tack room greets with DB9025 and clears it (0x42c0b0).
+    std::uint16_t finaleGreeting = 0;
 };
 
 // The game's application object (Godiva.cpp: Godiva, ctor 0x411bd0): the node

@@ -38,6 +38,10 @@ public:
     // --- motion (mover, §9.3) ------------------------------------------------
     void setVelocityPerUpdate(float dx, float dy, float dz);
     void setSpeed(float unitsPerSecondX, float unitsPerSecondY, float unitsPerSecondZ);
+    // The speed as stored (units per millisecond, mover +0x10..+0x18); game
+    // code compares speedX() * 1000 with its own per-second values.
+    float speedX() const { return m_sx; }
+    float speedY() const { return m_sy; }
 
     // --- world membership ------------------------------------------------------
     Node* node() const { return m_node; }
@@ -90,6 +94,8 @@ private:
     int m_motionPause = 0;
     float m_vx = 0, m_vy = 0, m_vz = 0;    // per update
     float m_sx = 0, m_sy = 0, m_sz = 0;    // per millisecond
+    bool m_moving = false;    // mover +0x1c
+    bool m_speedMode = false; // mover +0x1e: speed (per ms) instead of per-update delta
     bool m_pickable = true;
     bool m_perPixel = true;
     bool m_clipEnabled = false;

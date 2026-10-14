@@ -67,6 +67,11 @@ public:
     void press();                    // 0x40f2f0
     void release();                  // 0x40f310
     bool pressed() const { return m_pressed; }
+    // The sequences for normal / rollover / pressed (+0xb4 / +0xb8 / +0xbc),
+    // which some scenes rewrite after Init (Leapfrog's lily pads: 1 / 2 / 0).
+    void setSequences(int normal, int rollover, int pressed) {
+        m_seqNormal = normal, m_seqRollover = rollover, m_seqPressed = pressed;
+    }
     engine::Anim* anim() const { return m_anim; }
     // Forget the anim so the destructor leaves it alone (callers zero +0xac).
     engine::Anim* releaseAnim();

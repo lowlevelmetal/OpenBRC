@@ -2,6 +2,7 @@ add_library(brc_formats STATIC
     Canvas.cpp
     HcAnim.cpp
     OmtFile.cpp
+    OmtWriter.cpp
     Script.cpp
     Smacker.cpp
     Wave.cpp)

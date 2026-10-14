@@ -127,7 +127,10 @@ void MovieBase::scheduleNext() {
         m_nextDue = now;
 }
 
-void MovieBase::restartTiming() { m_nextDue = m_engine.ticks() + static_cast<std::uint32_t>(std::lround(m_frameMs)); }
+void MovieBase::restartTiming() {
+    m_nextDue = m_engine.ticks() + static_cast<std::uint32_t>(std::lround(m_frameMs));
+    m_pausedAt = m_engine.ticks(); // a movie opened paused starts its pause now (setPaused(false) adds it back)
+}
 
 // --- HCMovie -------------------------------------------------------------------------------
 

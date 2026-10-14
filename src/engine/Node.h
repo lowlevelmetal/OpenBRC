@@ -88,6 +88,13 @@ public:
     float cameraX() const { return m_camX; }
     float cameraY() const { return m_camY; }
     void setCamera(float x, float y) { m_camX = x, m_camY = y; }
+    // The view's mover (view vt+8 SetSpeed, units per second; 0 stops it): the
+    // camera moves by the frame delta before the elements update (display.md
+    // §3 step 2). The race scrolls with Barbie's horse this way (0x426940).
+    void setCameraSpeed(float unitsPerSecondX, float unitsPerSecondY) {
+        m_camSx = static_cast<float>(unitsPerSecondX * 0.001);
+        m_camSy = static_cast<float>(unitsPerSecondY * 0.001);
+    }
     const Rect& viewRect() const { return m_view; }
 
     // --- clock and updates (application.md §6.3) ---------------------------------
@@ -178,6 +185,7 @@ private:
     formats::Palette m_palette;
     Rect m_view{0, 0, 640, 480};
     float m_camX = 0, m_camY = 0;
+    float m_camSx = 0, m_camSy = 0; // camera speed per millisecond
 
     StopClock m_clock;
     int m_updateMode = 2;
