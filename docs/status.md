@@ -21,14 +21,17 @@ scenes land.
 | Scene | State |
 |---|---|
 | MattelLogoNode, HCLogoNode, BarbieSoftLogoNode | done |
-| Toolbar base (HCToolbarNode), buttons, exit dialog, voices | in progress |
-| preferences | in progress |
-| signin, intromovie | to do |
-| yard, stable, tackroom, grooming, bulletinboard | to do |
-| trail rides (appleW, cottageL, bridgeS, rainbowS, rabbitE, beachE, wishingL) and missions | to do |
-| applesort, leapfrog, bellgame, vinegame, carousel, race | to do |
-| opendoor, finalpayoff, credits | to do |
-| Toolbar popups: pager, map, saddlebag, camera and photo album, handbook | to do |
+| Toolbar base (HCToolbarNode), buttons, exit dialog, voices | done |
+| preferences | done |
+| signin, intromovie | done (sign-in screens pixel-identical to the original) |
+| yard | done |
+| bulletinboard, handbook, photo album, printing | done (panels pixel-identical to the original) |
+| stable, tackroom, grooming | in progress |
+| trail rides (appleW, cottageL, bridgeS, rainbowS, rabbitE, beachE, wishingL) | in progress |
+| trail rides: missions, certificates and rescues | to do |
+| applesort, leapfrog, bellgame, vinegame, carousel, race | in progress |
+| opendoor, finalpayoff, credits | done |
+| Toolbar popups: pager, map, saddlebag, camera | done |
 
 ## Deliberate differences
 
@@ -36,5 +39,8 @@ scenes land.
 * The Desktop Horse (a separate Windows program on the disc) is not installed.
 * Saved games, photos and preferences live in the user's data folder; the save files keep the
   original format (`savegame<N>.brc`), so saves from the 1998 game can be copied in.
+* Two bugs of the original are kept on purpose: pressing Go on the sign-in screen with no card
+  selected and then Go again starts with the default "Barbie" player in slot 9; and a few voice
+  and sound names that do not exist on the disc stay silent.
 * The low-end machine test always reports a fast machine (the measurement no longer means
   anything); the letterboxed trail videos are not used.
