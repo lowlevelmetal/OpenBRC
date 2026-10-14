@@ -69,6 +69,14 @@ public:
     // record and goes to the first node (`startNode` replaces it, like /node).
     void start(std::string startNode = {});
 
+    // Developer aids for testing scenes started with --node:
+    // loadSlot(N) loads savegame<N>.brc as sign-in would; applyDevState sets
+    // named record and session fields ("horse=2,saddle=1,course=2,control=1,
+    // mission=4,trail=6,firstride=1,m<i>=n (mission i done),c<i>=n, b<i>=n,
+    // finale=n,debug=1"). Returns an error for unknown keys.
+    bool loadSlot(int slot);
+    std::string applyDevState(std::string_view spec);
+
     std::unique_ptr<engine::Node> createNode(const std::string& name) override; // 0x412140
     void gotoNode(std::string_view name) override;                               // 0x413370
     void playMusic(std::string_view name);                                       // 0x4133c0

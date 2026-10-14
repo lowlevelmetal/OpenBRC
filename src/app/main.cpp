@@ -162,6 +162,14 @@ int run(int argc, char** argv) {
     if (startNode.empty() && settings.skipIntroLogos)
         startNode = "preferences";
     app.start(startNode);
+    if (cl->slot && !app.loadSlot(*cl->slot))
+        log::warn("--slot {}: no such saved game", *cl->slot);
+    if (cl->devState) {
+        if (auto err = app.applyDevState(*cl->devState); !err.empty()) {
+            log::error("{}", err);
+            return 2;
+        }
+    }
     mouse.showCursor(false); // the game draws its own cursor
 
     std::optional<Autoplay> autoplay;

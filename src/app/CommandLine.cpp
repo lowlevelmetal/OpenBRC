@@ -60,6 +60,17 @@ std::optional<CommandLine> CommandLine::parse(int argc, char** argv, std::string
             if (!v)
                 return fail("--autoplay needs a script");
             cl.autoplay = std::string(*v);
+        } else if (a == "--slot") {
+            auto v = value();
+            auto n = v ? str::parseInt(*v) : std::nullopt;
+            if (!n || *n < 0 || *n > 9)
+                return fail("--slot needs a save slot 0..9");
+            cl.slot = static_cast<int>(*n);
+        } else if (a == "--dev-state") {
+            auto v = value();
+            if (!v)
+                return fail("--dev-state needs key=value pairs");
+            cl.devState = std::string(*v);
         } else if (a == "-v" || a == "--verbose") {
             cl.verbose = true;
         } else if (a == "-h" || a == "--help" || a == "/?") {
@@ -88,6 +99,9 @@ std::string CommandLine::usage() {
            "  --fullscreen, --windowed\n"
            "  --skip-logos           start at the options screen\n"
            "  --node <scene>         start in a scene (debugging)\n"
+           "  --slot <n>             load saved game <n> first (debugging)\n"
+           "  --dev-state <k=v,...>  set player/session fields: horse, saddle, course, control,\n"
+           "                         mission, trail, firstride, finale, debug, m1..m8, c1..c4, b1..b3\n"
            "  --log <file>           also write the log to <file>\n"
            "  -v, --verbose          more log output\n"
            "  --version, --help\n";

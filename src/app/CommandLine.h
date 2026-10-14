@@ -20,6 +20,8 @@ struct CommandLine {
     bool verbose = false;                           // -v
     std::optional<std::filesystem::path> logFile;   // --log <file>
     std::optional<std::string> autoplay;            // --autoplay "<script>" (testing)
+    std::optional<int> slot;                        // --slot <n>: load savegame<n> at start (testing)
+    std::optional<std::string> devState;            // --dev-state "key=value,..." (testing)
     bool help = false;
     bool version = false;
 

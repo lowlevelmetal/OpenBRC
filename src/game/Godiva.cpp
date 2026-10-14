@@ -59,6 +59,60 @@ void Godiva::start(std::string startNode) {
     gotoNode("MattelLogoNode");
 }
 
+bool Godiva::loadSlot(int slot) {
+    auto rec = saves::load(slot);
+    if (!rec)
+        return false;
+    m_record = *rec;
+    m_slot = slot;
+    return true;
+}
+
+std::string Godiva::applyDevState(std::string_view spec) {
+    for (auto item : str::split(spec, ',')) {
+        item = str::trim(item);
+        if (item.empty())
+            continue;
+        const auto eq = item.find('=');
+        if (eq == std::string_view::npos)
+            return std::string("dev state: expected key=value, got '") + std::string(item) + "'";
+        const std::string key = str::lower(str::trim(item.substr(0, eq)));
+        const auto value = str::parseInt(str::trim(item.substr(eq + 1)));
+        if (!value)
+            return "dev state: bad value for " + key;
+        const auto v = static_cast<std::uint32_t>(*value);
+        auto indexed = [&](char prefix, std::size_t base, int count) -> bool {
+            if (key.size() == 2 && key[0] == prefix && key[1] >= '1' && key[1] < '1' + count) {
+                m_record.setU32(base + 4 * static_cast<std::size_t>(key[1] - '1'), v);
+                return true;
+            }
+            return false;
+        };
+        if (key == "horse")
+            m_record.setU32(PlayerRecord::kHorse, v);
+        else if (key == "saddle")
+            m_record.setU32(PlayerRecord::kSaddle, v);
+        else if (key == "firstride")
+            m_record.setU16(PlayerRecord::kFirstRideDone, static_cast<std::uint16_t>(v));
+        else if (key == "finale")
+            m_record.setU32(PlayerRecord::kFinaleState, v);
+        else if (key == "course")
+            m_session.raceCourse = v;
+        else if (key == "control")
+            controlMode = v;
+        else if (key == "mission")
+            m_session.activeMission = v;
+        else if (key == "trail")
+            m_session.missionTrail = v;
+        else if (key == "debug")
+            m_session.debugMode = static_cast<std::uint16_t>(v);
+        else if (!indexed('m', PlayerRecord::kMissionDone, 8) && !indexed('c', PlayerRecord::kCertificate, 4) &&
+                 !indexed('b', PlayerRecord::kBadge, 3))
+            return "dev state: unknown key " + key;
+    }
+    return {};
+}
+
 void Godiva::firstNode(std::string& name) {
     // The first switch takes the /node argument instead (application.md §2.2).
     if (!m_startOverride.empty())
