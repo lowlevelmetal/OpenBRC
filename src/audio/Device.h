@@ -7,7 +7,7 @@
 #include <expected>
 #include <memory>
 #include <mutex>
-#include <stop_token>
+#include <atomic>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -55,13 +55,15 @@ public:
     std::string_view name() const override { return "null"; }
 
 private:
-    void run(std::stop_token stop);
+    void run();
 
     Mixer& m_mixer;
     std::uint32_t m_periodMs;
     std::mutex m_mutex;
-    std::condition_variable_any m_wake;
-    std::jthread m_thread;
+    std::condition_variable m_wake;
+    // std::thread with a flag rather than std::jthread: Apple's libc++ has no jthread.
+    bool m_stop = false; // guarded by m_mutex
+    std::thread m_thread;
 };
 
 // SdlOutput, or NullOutput (with a warning in the log) when no device opens.

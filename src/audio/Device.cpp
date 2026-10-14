@@ -61,20 +61,24 @@ void SdlOutput::feed(void* user, SDL_AudioStream* stream, int additional, int /*
 
 NullOutput::NullOutput(Mixer& mixer, std::uint32_t periodMs)
     : m_mixer(mixer), m_periodMs(std::max<std::uint32_t>(periodMs, 1)),
-      m_thread([this](std::stop_token stop) { run(stop); }) {}
+      m_thread([this] { run(); }) {}
 
 NullOutput::~NullOutput() {
-    m_thread.request_stop();
+    {
+        std::lock_guard lock(m_mutex);
+        m_stop = true;
+    }
     m_wake.notify_all();
+    m_thread.join();
 }
 
-void NullOutput::run(std::stop_token stop) {
+void NullOutput::run() {
     using Clock = std::chrono::steady_clock;
     const auto start = Clock::now();
     std::uint64_t rendered = 0;
     std::vector<float> buffer(kChunkFrames * 2);
     std::unique_lock lock(m_mutex);
-    while (!stop.stop_requested()) {
+    while (!m_stop) {
         const auto elapsed =
             std::chrono::duration_cast<std::chrono::microseconds>(Clock::now() - start).count();
         const std::uint64_t due = static_cast<std::uint64_t>(elapsed) * m_mixer.outputRate() / 1'000'000;
@@ -86,7 +90,7 @@ void NullOutput::run(std::stop_token stop) {
             m_mixer.render(std::span(buffer.data(), n * 2));
             rendered += n;
         }
-        m_wake.wait_for(lock, stop, std::chrono::milliseconds(m_periodMs), [] { return false; });
+        m_wake.wait_for(lock, std::chrono::milliseconds(m_periodMs), [this] { return m_stop; });
     }
 }
 

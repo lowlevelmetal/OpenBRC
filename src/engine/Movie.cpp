@@ -131,7 +131,9 @@ void MovieBase::restartTiming() { m_nextDue = m_engine.ticks() + static_cast<std
 
 // --- HCMovie -------------------------------------------------------------------------------
 
-HcMovie::HcMovie(Engine& engine, Node& owner) : MovieBase(engine), m_owner(owner) {}
+// The owner only provided the view origin in the original; MovieDone goes to
+// whichever node is current.
+HcMovie::HcMovie(Engine& engine, Node&) : MovieBase(engine) {}
 
 bool HcMovie::open(std::string_view name, bool, bool doubleSize, bool directToScreen, bool, int, bool colorKey) {
     // 0x4534e0. Preload/no-skip/extra buffer only tuned the CD streaming.

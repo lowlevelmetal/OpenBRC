@@ -78,9 +78,6 @@ public:
               bool noSkip = true, int extraBuffer = 0, bool colorKey = true);
     void advance();           // 0x453a20
     void spendTime() override; // 0x453490
-
-private:
-    Node& m_owner;
 };
 
 // The Godiva Smacker player (0x41a300): a forced frame rate (SmackFrameRate),
