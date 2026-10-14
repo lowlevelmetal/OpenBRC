@@ -2,6 +2,7 @@ add_library(brc_engine STATIC
     Anim.cpp
     Broadcaster.cpp
     Element.cpp
+    Elements.cpp
     Engine.cpp
     Image8.cpp
     Node.cpp

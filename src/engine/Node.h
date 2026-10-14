@@ -111,6 +111,13 @@ public:
     // Point pick (0x495c40): frontmost pickable element under (x, y).
     Pick pick(int x, int y) const;
 
+    // The mouse relay (node+0xa0, 0x492cb0): broadcasts kMousePress (-600, only
+    // when something was hit) and kMouseRelease (-601, always) with the Pick to
+    // the node itself first, then to the buttons that listen to it.
+    Broadcaster& mouseRelay() { return m_mouseRelay; }
+    static constexpr int kMousePress = -600;
+    static constexpr int kMouseRelease = -601;
+
     bool inputDisabled() const { return m_inputDisabled; } // +0x9c
     void setInputDisabled(bool d) { m_inputDisabled = d; }
 
@@ -150,7 +157,9 @@ public:
     virtual void scriptEnded(Script& script);               // vt+0x90: posts 0x6d
     virtual void scriptNumber(const std::string&, float) {} // vt+0x94
     virtual void scriptMessage(Script&, std::string_view, int) {} // vt+0x98
-    // The node's listener (+0x18): timers, the inactivity timer (50000), ...
+    // The node's listener (+0x18, 0x454b50): relay clicks become onPress /
+    // onRelease (unless input is disabled or only the background was hit);
+    // everything else (timers, the inactivity timer 50000, ...) goes to onMessage.
     void listen(int message, const MessageData& data) override;
     virtual void onMessage(int, const MessageData&) {}
 
@@ -178,6 +187,7 @@ private:
     int m_pauseCount = 0;
     bool m_forceRedraw = true;
     bool m_inputDisabled = false;
+    Broadcaster m_mouseRelay;
 };
 
 } // namespace brc::engine

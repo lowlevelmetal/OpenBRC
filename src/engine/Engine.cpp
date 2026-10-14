@@ -287,17 +287,15 @@ void Engine::handleInput(const InputEvent& e) {
         }
         if (m_node != node || !node)
             break; // the handler switched nodes synchronously (it never does in the original)
-        // The node's click tracker (0x492db0): pick, then press/release.
+        // The node's click tracker (0x492db0): pick, then -600 / -601 on its relay.
         Pick p = node->pick(e.x, e.y);
         p.modifiers = e.modifiers;
         p.notLeftPress = e.type != InputEvent::LeftDown;
         p.eventType = e.type;
-        if ((p.result != Pick::None || !down) && !node->inputDisabled() && p.result != Pick::Background) {
-            if (down)
-                node->onPress(p);
-            else
-                node->onRelease(p);
-        }
+        if (p.result != Pick::None || !down)
+            node->mouseRelay().broadcast(down ? Node::kMousePress : Node::kMouseRelease, {&p});
+        if (m_node != node)
+            break;
         m_mouseListeners.broadcast(down ? -102 : -103, {&e});
         break;
     }

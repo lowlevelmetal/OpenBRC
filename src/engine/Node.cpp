@@ -26,6 +26,7 @@ Node::Node(Engine& engine, std::string name, std::string_view backgroundName)
     }
     if (auto img = m_engine.resources().image(bg, m_palette))
         setBackground(std::move(img));
+    m_mouseRelay.addListener(this);
 }
 
 Node::~Node() {
@@ -250,6 +251,18 @@ void Node::scriptPreempted(Script& script) { m_engine.scriptEvents().broadcast(m
 
 void Node::scriptEnded(Script& script) { m_engine.scriptEvents().broadcast(msg::kScriptDone, {&script}); }
 
-void Node::listen(int message, const MessageData& data) { onMessage(message, data); }
+void Node::listen(int message, const MessageData& data) {
+    if (message == kMousePress || message == kMouseRelease) {
+        const auto* pick = static_cast<const Pick*>(data.ptr);
+        if (pick && !m_inputDisabled && pick->result != Pick::Background) {
+            if (message == kMousePress)
+                onPress(*pick);
+            else
+                onRelease(*pick);
+        }
+        return;
+    }
+    onMessage(message, data);
+}
 
 } // namespace brc::engine
