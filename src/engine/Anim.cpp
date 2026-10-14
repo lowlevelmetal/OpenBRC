@@ -103,6 +103,15 @@ std::unique_ptr<Anim> Anim::load(Engine& engine, std::string_view name, const Ca
 
 Anim::~Anim() = default;
 
+void Anim::addFrameFlags(int seq, int frame, std::uint32_t flags) {
+    if (seq < 0 || seq >= sequenceCount())
+        return;
+    auto& frames = m_desc->sequences[static_cast<std::size_t>(seq)].frames;
+    if (frame < 0 || static_cast<std::size_t>(frame) >= frames.size())
+        return;
+    frames[static_cast<std::size_t>(frame)].flags |= flags;
+}
+
 int Anim::frameCount(int seq) const {
     if (seq < 0 || seq >= sequenceCount())
         return 0;

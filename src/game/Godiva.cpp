@@ -2,6 +2,7 @@
 
 #include "core/Log.h"
 #include "core/StringUtil.h"
+#include "game/Popups.h"
 
 #include <map>
 
@@ -36,9 +37,11 @@ std::string_view nodeName(int index) {
     return index >= 0 && index < static_cast<int>(kNodeNames.size()) ? kNodeNames[static_cast<std::size_t>(index)] : "";
 }
 
-Godiva::Godiva(const vfs::Vfs& data, engine::Host& host, audio::Mixer* mixer) : engine::Engine(data, host, mixer) {}
+Godiva::Godiva(const vfs::Vfs& data, engine::Host& host, audio::Mixer* mixer)
+    : engine::Engine(data, host, mixer), m_map(std::make_unique<BarbieMap>()) {}
 
 Godiva::~Godiva() {
+    deleteCurrentNode(); // toolbar nodes close their popup (possibly the map) when deleted
     resources().close("common.omt");
     resources().close("commonhd.omt");
 }

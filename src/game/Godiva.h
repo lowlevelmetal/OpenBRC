@@ -13,6 +13,7 @@
 
 namespace brc::game {
 
+class BarbieMap;
 class Godiva;
 
 // Scenes register themselves with REGISTER_NODE so the factory (and the
@@ -81,6 +82,7 @@ public:
     std::uint32_t controlMode = 0;   // app+0x1A8: 1 keyboard, 0 mouse buttons, 2 mouse motion
     std::uint32_t popupRequest = 0;  // app+0x1AC: 1 pager, 3 map, 4 bag requested from a mini-game
     engine::Timer& idleTimer() { return *m_idleTimer; } // app+0x19C
+    BarbieMap& map() { return *m_map; }                 // app+0x188: the trail map popup
     std::uint32_t idleInterval = 20000; // app+0x1A4
 
 protected:
@@ -94,6 +96,7 @@ private:
     Session m_session;
     int m_slot = 0;
     std::unique_ptr<engine::Timer> m_idleTimer;
+    std::unique_ptr<BarbieMap> m_map;
     std::string m_startOverride;
 };
 

@@ -4,7 +4,9 @@ add_library(brc_engine STATIC
     Element.cpp
     Elements.cpp
     Engine.cpp
+    Font.cpp
     Image8.cpp
+    Movie.cpp
     Node.cpp
     Resources.cpp
     ScriptExecutor.cpp

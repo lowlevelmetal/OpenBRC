@@ -170,6 +170,7 @@ bool SoundManager::play(Sound& s) {
     }
     m_mixer->setPositionMs(s.m_voice, static_cast<std::uint32_t>(std::max<int>(0, s.m_startMs)));
     m_mixer->play(s.m_voice, s.m_loops);
+    log::debug("sound: play {} (loops {}, volume {})", s.m_name, s.m_loops, s.m_nextVolume);
     ++s.m_uses;
     s.m_flags = (s.m_flags & ~(Sound::kStopped | Sound::kNotified)) | Sound::kPlaying;
     return true;
@@ -182,6 +183,7 @@ void SoundManager::stop(Sound& s) {
         const bool completed = (s.m_flags & Sound::kPlaying) && s.isDone();
         if (s.m_flags & Sound::kPlaying)
             --s.m_uses;
+        log::debug("sound: {} {}", s.m_name, completed ? "ended" : "stopped");
         if (Node* node = m_engine.currentNode())
             node->soundDone(s.m_name, &s, completed);
     }

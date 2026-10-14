@@ -55,6 +55,7 @@ public:
     AnimRegistry& anims() { return m_anims; }
     ScriptSystem& scripts() { return m_scripts; }
     SoundManager& sounds() { return m_sounds; }
+    audio::Mixer* mixer() const { return m_mixer; } // null when sound is off
     TaskList& tasks() { return m_tasks; }
     Broadcaster& scriptEvents() { return m_scriptEvents; } // [0x80a43c]
     Broadcaster& mouseListeners() { return m_mouseListeners; } // event manager +0xc
@@ -113,6 +114,9 @@ protected:
     // Called once when the first node is about to be created (vt+0x40).
     virtual void firstNode(std::string&) {}
     void switchNode(); // 0x44b4e0
+    // Deletes the current node now (the destructor does it too). A subclass
+    // whose members the node still uses calls it first in its own destructor.
+    void deleteCurrentNode();
     // 0x44df20 / 0x44df60: palette (and volume) fade around a switch.
     void fade(bool out, int targetVolume);
 
@@ -121,6 +125,7 @@ private:
     class AppTask;
 
     Host& m_host;
+    audio::Mixer* m_mixer;
     TaskList m_tasks; // must outlive the tasks below
     Resources m_resources;
     Broadcaster m_scriptEvents;

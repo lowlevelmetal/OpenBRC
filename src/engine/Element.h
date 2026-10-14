@@ -33,6 +33,7 @@ public:
     void setHideCount(int n);
     virtual void pause(bool on);
     int motionPauseCount() const { return m_motionPause; }
+    void setMotionPauseCount(int n) { m_motionPause = n < 0 ? 0 : n; } // element +0x5c written directly
 
     // --- motion (mover, §9.3) ------------------------------------------------
     void setVelocityPerUpdate(float dx, float dy, float dz);

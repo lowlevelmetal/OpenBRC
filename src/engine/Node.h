@@ -151,7 +151,7 @@ public:
     virtual void sequenceEnded(Anim& anim, int seq);        // vt+0x78: posts 0x6c
     virtual void frameEvent(Anim&, int, int) {}             // vt+0x7c
     virtual void soundDone(const std::string& name, const void* sound, bool completed); // vt+0x80: posts 0x6a
-    virtual void movieDone(std::intptr_t argument);         // vt+0x84: posts 0x6b
+    virtual void movieDone(const std::string& movie);       // vt+0x84: posts 0x6b
     virtual void scriptStarted(const std::string&) {}       // vt+0x88
     virtual void scriptPreempted(Script& script);           // vt+0x8c: posts 0x6d
     virtual void scriptEnded(Script& script);               // vt+0x90: posts 0x6d

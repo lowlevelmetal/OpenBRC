@@ -49,6 +49,12 @@ public:
     bool playing() const { return !m_stopped && m_pause == 0; }
     void pause(bool on) override;                          // 0x447b50
     int playbackPauseCount() const { return m_pause; }
+    // Sets the playback pause counter directly (the toolbar's cursor code
+    // writes anim+0xe0 = 0 before showing the edge arrow, 0x41cba0).
+    void setPlaybackPauseCount(int n) { m_pause = n < 0 ? 0 : n; }
+    // ORs `flags` into a frame's flags. The description is this anim's own
+    // copy; HCRolloverButton::Init (0x40ed80) marks button frames this way.
+    void addFrameFlags(int seq, int frame, std::uint32_t flags);
     // 0x449e40: every frame offset becomes (-w/2, -h/2) of the current image
     // and the position (0, 0).
     void recenter();
@@ -80,7 +86,7 @@ private:
 
     Engine& m_engine;
     std::string m_name;
-    std::shared_ptr<const formats::HcAnimDesc> m_desc;
+    std::shared_ptr<formats::HcAnimDesc> m_desc; // owned by this anim (every load parses its own copy)
     std::vector<formats::HcAnimOffset> m_offsets; // per source; changed by recenter()
     std::vector<Source> m_sources;
     std::unique_ptr<formats::Smacker> m_smk;

@@ -245,7 +245,9 @@ void Node::soundDone(const std::string&, const void* sound, bool) {
     m_engine.scriptEvents().broadcast(msg::kSoundDone, {nullptr, 0, sound});
 }
 
-void Node::movieDone(std::intptr_t argument) { m_engine.scriptEvents().broadcast(msg::kMovieDone, {nullptr, argument}); }
+void Node::movieDone(const std::string& movie) {
+    m_engine.scriptEvents().broadcast(msg::kMovieDone, {nullptr, 0, movie.c_str()});
+}
 
 void Node::scriptPreempted(Script& script) { m_engine.scriptEvents().broadcast(msg::kScriptDone, {&script}); }
 

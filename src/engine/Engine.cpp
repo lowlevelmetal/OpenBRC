@@ -33,7 +33,7 @@ private:
 };
 
 Engine::Engine(const vfs::Vfs& data, Host& host, audio::Mixer* mixer)
-    : m_host(host), m_resources(data), m_sounds(*this, mixer), m_scripts(*this), m_anims(*this) {
+    : m_host(host), m_mixer(mixer), m_resources(data), m_sounds(*this, mixer), m_scripts(*this), m_anims(*this) {
     // The event manager is created by the OMediaApplication constructor, the
     // application's own periodical by HCApplication's: both before any node.
     m_eventTask = std::make_unique<EventTask>(*this);
@@ -44,11 +44,15 @@ Engine::Engine(const vfs::Vfs& data, Host& host, audio::Mixer* mixer)
 }
 
 Engine::~Engine() {
+    deleteCurrentNode();
+    m_anims.deleteAll();
+    m_sounds.stopAll(true);
+}
+
+void Engine::deleteCurrentNode() {
     m_scripts.deleteAll();
     m_ownedNode.reset();
     m_node = nullptr;
-    m_anims.deleteAll();
-    m_sounds.stopAll(true);
 }
 
 int Engine::rand() {
