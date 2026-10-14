@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <charconv>
+#include <cstdlib>
 
 namespace brc::str {
 
@@ -75,11 +76,23 @@ std::optional<double> parseDouble(std::string_view s) {
     s = trim(s);
     if (!s.empty() && s[0] == '+')
         s.remove_prefix(1);
-    double value = 0;
-    auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value);
-    if (ec != std::errc{} || ptr != s.data() + s.size() || s.empty())
+    if (s.empty())
+        return std::nullopt;
+#if defined(__APPLE__)
+    // Apple's libc++ has no floating-point std::from_chars.
+    const std::string text(s);
+    char* end = nullptr;
+    const double value = std::strtod(text.c_str(), &end);
+    if (end != text.c_str() + text.size())
         return std::nullopt;
     return value;
+#else
+    double value = 0;
+    auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value);
+    if (ec != std::errc{} || ptr != s.data() + s.size())
+        return std::nullopt;
+    return value;
+#endif
 }
 
 std::optional<bool> parseBool(std::string_view s) {
