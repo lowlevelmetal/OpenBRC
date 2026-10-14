@@ -41,7 +41,7 @@ std::shared_ptr<Font> Font::load(Resources& resources, std::string_view name, co
     f->m_glyphs = Image8(w, h, 0);
     f->m_glyphs.opaque.resize(rgb.size());
     for (std::size_t i = 0; i < rgb.size(); ++i) {
-        f->m_glyphs.pixels[i] = display.lookup(rgb[i]);
+        f->m_glyphs.pixels[i] = display.nearest(rgb[i]);
         f->m_glyphs.opaque[i] = background[i] ? 0 : 1;
     }
 

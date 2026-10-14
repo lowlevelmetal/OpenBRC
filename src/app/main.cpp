@@ -30,7 +30,10 @@ class SdlHost final : public engine::Host {
 public:
     SdlHost(render::Presenter& presenter, platform::Mouse& mouse) : m_presenter(presenter), m_mouse(mouse) {}
 
-    std::uint32_t ticks() override { return static_cast<std::uint32_t>(m_clock.milliseconds()); }
+    // GetTickCount counted from boot, so the game never saw small values;
+    // start where a machine that has been up for a few hours would be.
+    std::uint32_t ticks() override { return kTickBase + static_cast<std::uint32_t>(m_clock.milliseconds()); }
+    static constexpr std::uint32_t kTickBase = 10'000'000;
 
     void present(const engine::Image8& screen, const std::array<std::uint32_t, 256>& palette) override {
         m_presenter.submit({screen.pixels.data(), screen.width, screen.height, screen.width, &palette});

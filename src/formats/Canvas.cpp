@@ -129,12 +129,18 @@ std::uint8_t Palette::lookup(std::uint32_t c) const {
     const unsigned r = (c >> 16) & 0xFF, g = (c >> 8) & 0xFF, b = c & 0xFF;
     if (inverse.size() == 4096)
         return inverse[(r >> 4) << 8 | (g >> 4) << 4 | (b >> 4)];
+    return nearest(c);
+}
+
+std::uint8_t Palette::nearest(std::uint32_t c) const {
+    const long r = (c >> 16) & 0xFF, g = (c >> 8) & 0xFF, b = c & 0xFF;
     int best = 0;
     long bestDist = std::numeric_limits<long>::max();
     for (int i = 0; i < 256; ++i) {
-        const long dr = long((rgb[static_cast<std::size_t>(i)] >> 16) & 0xFF) - long(r);
-        const long dg = long((rgb[static_cast<std::size_t>(i)] >> 8) & 0xFF) - long(g);
-        const long db = long(rgb[static_cast<std::size_t>(i)] & 0xFF) - long(b);
+        const std::uint32_t e = rgb[static_cast<std::size_t>(i)];
+        const long dr = static_cast<long>((e >> 16) & 0xFF) - r;
+        const long dg = static_cast<long>((e >> 8) & 0xFF) - g;
+        const long db = static_cast<long>(e & 0xFF) - b;
         const long d = dr * dr + dg * dg + db * db;
         if (d < bestDist) {
             bestDist = d;

@@ -129,11 +129,11 @@ std::shared_ptr<const Image8> Resources::image(std::string_view name, const form
         for (int i = 0; i < 256; ++i)
             map[static_cast<std::size_t>(i)] = static_cast<std::uint8_t>(i);
         if (cv->depth == 1) {
-            map[0] = display.lookup(0xFFFFFF); // white
-            map[1] = display.lookup(0x000000); // black
+            map[0] = display.nearest(0xFFFFFF); // white
+            map[1] = display.nearest(0x000000); // black
         } else if (cv->palette && !(cv->palette->rgb == display.rgb)) {
             for (int i = 0; i < 256; ++i)
-                map[static_cast<std::size_t>(i)] = display.lookup(cv->palette->rgb[static_cast<std::size_t>(i)]);
+                map[static_cast<std::size_t>(i)] = display.nearest(cv->palette->rgb[static_cast<std::size_t>(i)]);
         }
         for (std::size_t i = 0; i < cv->indices.size(); ++i)
             img->pixels[i] = map[cv->indices[i]];
@@ -144,7 +144,7 @@ std::shared_ptr<const Image8> Resources::image(std::string_view name, const form
         }
     } else {
         for (std::size_t i = 0; i < cv->rgb.size(); ++i)
-            img->pixels[i] = display.lookup(cv->rgb[i]);
+            img->pixels[i] = display.nearest(cv->rgb[i]);
         if (cv->hasKey) {
             img->opaque.resize(img->pixels.size());
             for (std::size_t i = 0; i < cv->rgb.size(); ++i)

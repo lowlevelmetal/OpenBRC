@@ -16,9 +16,12 @@ struct Palette {
     std::array<std::uint32_t, 256> rgb{}; // 0x00RRGGBB (guns >> 8)
     std::vector<std::uint8_t> inverse;     // 4096 entries, index (r>>4)<<8 | (g>>4)<<4 | (b>>4); may be empty
 
-    // Nearest entry through the stored inverse table (as the original's colour
-    // conversion does), or by search when there is no table.
+    // Entry through the stored 4:4:4 inverse table (or nearest() without one).
     std::uint8_t lookup(std::uint32_t rgb) const;
+    // GDI GetNearestPaletteIndex: the first entry with the smallest squared
+    // RGB distance. This is how canvases are remapped to the display palette
+    // when they are loaded (verified against the original's sign-in screen).
+    std::uint8_t nearest(std::uint32_t rgb) const;
     friend bool operator==(const Palette& a, const Palette& b) { return a.rgb == b.rgb; }
 };
 
