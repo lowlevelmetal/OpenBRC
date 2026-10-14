@@ -4,7 +4,6 @@
 #include "core/Log.h"
 #include "engine/Engine.h"
 #include "engine/Movie.h"
-#include "game/FinalPayoff.h"
 #include "game/Godiva.h"
 #include "game/PlayerRecord.h"
 #include "game/ToolbarNode.h"
@@ -22,7 +21,7 @@ public:
         setBackground(nullptr);
         setFrameInterval(100);
         setUpdateMode(0);
-        flags::finalPayoffShown = true;
+        app.session().finaleGreeting = 1; // [0x809b00]: the next tack room greets with DB9025
         app.record().setU16(PlayerRecord::kPayoffSeen, 1); // app+0x2A4
         app.saveGame();
         listenToMouseButtons();
