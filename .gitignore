@@ -1,0 +1,34 @@
+# Build output
+/build*/
+/out/
+/install/
+/dist/
+CMakeUserPresets.json
+compile_commands.json
+.cache/
+
+# Local working area: the disc contents, RE databases and dumps, screenshots.
+# NEVER commit game data or anything derived from the retail executable.
+/local/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+# Original game files, in case they get copied somewhere unexpected
+*.iso
+*.ISO
+*.bin
+*.cue
+*.img
+*.omt
+*.cache
+*.smk
+*.SMK
+*.exe
+*.EXE
+*.dll
+*.DLL

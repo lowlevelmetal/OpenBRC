@@ -1,0 +1,3 @@
+This file marks a portable OpenBRC: settings, saved games and photos are kept in the
+"user" folder next to openbrc.exe instead of in your user profile. Delete it to
+use the profile folders (%APPDATA%\OpenBRC and %LOCALAPPDATA%\OpenBRC).

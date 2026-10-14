@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.lowlevelmetal.OpenBRC</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>OpenBRC</name>
+  <summary>Open source reimplementation of Barbie Riding Club</summary>
+  <description>
+    <p>
+      OpenBRC is an open source engine that runs the 1998 adventure game
+      Barbie Riding Club on modern Linux, Windows and macOS systems. It
+      reproduces the original game's behaviour while adding support for any
+      screen resolution, aspect ratio and refresh rate, with Vulkan or OpenGL
+      rendering.
+    </p>
+    <p>
+      OpenBRC contains no game content. You need your own copy of the original
+      Barbie Riding Club CD-ROM: point OpenBRC at the disc, a disc image
+      (ISO/BIN/CUE) or an existing installation the first time it starts.
+    </p>
+  </description>
+  <launchable type="desktop-id">io.github.lowlevelmetal.OpenBRC.desktop</launchable>
+  <provides>
+    <binary>openbrc</binary>
+  </provides>
+  <url type="homepage">https://github.com/lowlevelmetal/OpenBRC</url>
+  <url type="bugtracker">https://github.com/lowlevelmetal/OpenBRC/issues</url>
+  <developer id="io.github.lowlevelmetal">
+    <name>OpenBRC contributors</name>
+  </developer>
+  <categories>
+    <category>Game</category>
+    <category>KidsGame</category>
+  </categories>
+  <content_rating type="oars-1.1"/>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </supports>
+  <requires>
+    <display_length compare="ge">480</display_length>
+  </requires>
+  <releases>
+    <release version="0.1.0" date="2026-10-14" type="development">
+      <description>
+        <p>First version.</p>
+      </description>
+    </release>
+  </releases>
+</component>

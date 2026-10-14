@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=OpenBRC
+GenericName=Adventure Game
+Comment=Open source reimplementation of Barbie Riding Club (requires the original game disc)
+Exec=openbrc
+TryExec=openbrc
+Icon=io.github.lowlevelmetal.OpenBRC
+Terminal=false
+Categories=Game;KidsGame;AdventureGame;
+Keywords=barbie;riding;club;horse;pony;stable;
+StartupNotify=true
+SingleMainWindow=true

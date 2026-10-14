@@ -1,0 +1,191 @@
+# Builds and tests OpenBRC on Linux (GCC, Clang), Windows (MSVC) and macOS,
+# and packages the results. Tests that need the original game skip themselves
+# (OPENBRC_GAME_DATA is never set here); no game data is ever downloaded or cached.
+#
+# Pushing a tag v* also publishes the packages as a GitHub release.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CTEST_PARALLEL_LEVEL: 4
+
+jobs:
+  linux:
+    name: Linux (${{ matrix.compiler }})
+    runs-on: ubuntu-24.04
+    # Arch Linux tracks current GCC/Clang/SDL3, which the C++23 code base needs
+    # (std::print, std::expected, ...).
+    container: archlinux:latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - compiler: gcc
+            cc: gcc
+            cxx: g++
+            package: true
+          - compiler: clang
+            cc: clang
+            cxx: clang++
+            package: false
+    steps:
+      - name: Install build dependencies
+        run: |
+          pacman -Syu --noconfirm --needed \
+            base-devel git cmake ninja gcc clang lld sdl3 gtest \
+            appstream desktop-file-utils
+
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          -DCMAKE_C_COMPILER=${{ matrix.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
+          -DOPENBRC_WARNINGS_AS_ERRORS=ON
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Validate desktop metadata
+        if: matrix.package
+        run: |
+          desktop-file-validate packaging/linux/io.github.lowlevelmetal.OpenBRC.desktop
+          appstreamcli validate --no-net packaging/linux/io.github.lowlevelmetal.OpenBRC.metainfo.xml
+
+      - name: Package
+        if: matrix.package
+        run: cd build && cpack
+
+      - name: Upload package
+        if: matrix.package
+        uses: actions/upload-artifact@v4
+        with:
+          name: openbrc-linux-x86_64
+          path: |
+            build/OpenBRC-*.tar.gz
+            build/OpenBRC-*.tar.gz.sha256
+          if-no-files-found: error
+
+  windows:
+    name: Windows (MSVC)
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MSVC developer environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Install Ninja and NSIS if missing
+        shell: pwsh
+        run: |
+          if (-not (Get-Command ninja -ErrorAction SilentlyContinue)) {
+            choco install ninja --no-progress -y
+          }
+          $nsis = "${env:ProgramFiles(x86)}\NSIS\makensis.exe"
+          if (-not (Test-Path $nsis) -and -not (Get-Command makensis -ErrorAction SilentlyContinue)) {
+            choco install nsis --no-progress -y
+          }
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl -DOPENBRC_USE_SYSTEM_DEPS=OFF
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Build installer
+        run: cmake --build build --target package_installer
+
+      - name: Build portable ZIP
+        run: cd build && cpack
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: openbrc-windows-x86_64
+          path: |
+            build/OpenBRC-*-setup.exe
+            build/OpenBRC-*-portable.zip
+            build/OpenBRC-*-portable.zip.sha256
+          if-no-files-found: error
+
+  macos:
+    name: macOS (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-15
+          - arch: x86_64
+            runner: macos-15-intel
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: brew install ninja molten-vk
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          -DOPENBRC_USE_SYSTEM_DEPS=OFF -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Package
+        run: cd build && cpack
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: openbrc-macos-${{ matrix.arch }}
+          path: |
+            build/OpenBRC-*.dmg
+            build/OpenBRC-*.dmg.sha256
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [linux, windows, macos]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" dist/* --repo "${GITHUB_REPOSITORY}" --title "OpenBRC ${GITHUB_REF_NAME#v}" --generate-notes
