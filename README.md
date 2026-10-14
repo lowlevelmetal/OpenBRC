@@ -9,7 +9,7 @@ of that, OpenBRC adds:
 - any resolution, aspect ratio and refresh rate, windowed or fullscreen, HiDPI aware;
   the original 640×480 picture is scaled sharply, with optional smooth and CRT filters
 - a Vulkan renderer with an automatic OpenGL fallback
-- native builds for Linux, Windows (with an installer) and macOS (Intel and Apple Silicon)
+- native builds for Linux, Windows 10/11 (with an installer) and macOS 13+ (Intel and Apple Silicon)
 
 > **Status:** in development. See [docs/status.md](docs/status.md) for what works.
 

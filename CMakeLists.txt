@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.25...4.0)
 
+# macOS 13.3 is the first release whose C++ library has std::to_chars for
+# floating point, which std::format needs.
+if(APPLE AND NOT CMAKE_OSX_DEPLOYMENT_TARGET)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 13.3 CACHE STRING "Minimum macOS version")
+endif()
+
 project(OpenBRC
     VERSION 0.1.0
     DESCRIPTION "Open source reimplementation of Barbie Riding Club"
