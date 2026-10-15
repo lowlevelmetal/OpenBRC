@@ -204,6 +204,7 @@ protected:
     void m4MouseDown(const engine::Pick& pick); // 0x4423d0
     void m4ScriptEnded(std::string_view script); // 0x4427b0
     // M1..M4 helpers (TrailMissions1to4.cpp):
+    void m3PlayMusic(std::string_view name); // the music switch inlined in 0x441700
 
 
     void m5LoadSounds();      // 0x442810
@@ -431,6 +432,7 @@ private:
     engine::Anim* m_exitProp = nullptr;                 // +0x6D0: `m4 cottage` or `m5 game` (click 0x2711)
     std::unique_ptr<ACRollover> m_exitPropRollover;     // +0x6D4
     int m_missionTrail = -1;                            // +0x7F0: trail the mission content was set up on (-1 none)
+    int m_hintTrail = 7;                                // +0x70C: trail of the last wrong-trail hint (ctor: app+0x314)
 
     CertificateState m_cert;   // TrailCertificates.h
     Missions1to4State m_m14;   // TrailMissions1to4.h

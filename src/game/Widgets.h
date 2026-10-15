@@ -101,6 +101,12 @@ public:
     ~ACRollover() override; // 0x4011f0: cursor back to sequence 0
     void spendTime() override; // 0x401290
     bool hovering() const { return m_hover; }
+    // A new cursor sequence (+0x14), with the hover state (+0x18) forgotten so
+    // the next pass sets it (M4_MouseDown 0x4423d0 writes both fields).
+    void setCursorSequence(int seq) {
+        m_cursorSeq = seq;
+        m_hover = false;
+    }
 
     static int liveCount(); // [0x809930]
 
