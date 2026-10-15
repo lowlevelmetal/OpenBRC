@@ -39,13 +39,15 @@ public:
         m_presenter.submit({screen.pixels.data(), screen.width, screen.height, screen.width, &palette});
     }
 
-    std::pair<int, int> mousePosition() override { return m_pointer ? *m_pointer : m_mouse.position(); }
-    // Autoplay drives a virtual pointer instead of the real one.
-    void setPointerOverride(std::pair<int, int>* p) { m_pointer = p; }
-    bool leftButtonDown() override { return (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON_LMASK) != 0; }
+    std::pair<int, int> mousePosition() override { return m_virtual ? m_virtual->pos : m_mouse.position(); }
+    // Autoplay drives a virtual mouse instead of the real one.
+    void setMouseOverride(VirtualMouse* m) { m_virtual = m; }
+    bool leftButtonDown() override {
+        return m_virtual ? m_virtual->left : (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON_LMASK) != 0;
+    }
     void warpMouse(int x, int y) override {
-        if (m_pointer)
-            *m_pointer = {x, y};
+        if (m_virtual)
+            m_virtual->pos = {x, y};
         else
             m_mouse.warp(x, y);
     }
@@ -62,7 +64,7 @@ private:
     render::Presenter& m_presenter;
     platform::Mouse& m_mouse;
     platform::Clock m_clock;
-    std::pair<int, int>* m_pointer = nullptr;
+    VirtualMouse* m_virtual = nullptr;
 };
 
 std::uint16_t modifiers() {
@@ -173,14 +175,14 @@ int run(int argc, char** argv) {
     mouse.showCursor(false); // the game draws its own cursor
 
     std::optional<Autoplay> autoplay;
-    std::pair<int, int> autoPointer{320, 240};
+    VirtualMouse autoMouse;
     if (cl->autoplay) {
         autoplay = Autoplay::parse(*cl->autoplay, paths::userDataDir() / "autoplay", &error);
         if (!autoplay) {
             log::error("{}", error);
             return 2;
         }
-        host.setPointerOverride(&autoPointer);
+        host.setMouseOverride(&autoMouse);
     }
     SDL_StartTextInput(presenter->window());
 
@@ -322,7 +324,7 @@ int run(int argc, char** argv) {
             running = false;
             break;
         }
-        if (autoplay && !autoplay->step(app, host.ticks(), autoPointer))
+        if (autoplay && !autoplay->step(app, host.ticks(), autoMouse))
             app.quit();
         app.runPass();
         // The original spins at full speed; a short sleep keeps the CPU cool

@@ -42,11 +42,23 @@ std::optional<Autoplay> Autoplay::parse(std::string_view script, std::filesystem
     return a;
 }
 
-bool Autoplay::step(engine::Engine& app, std::uint32_t now, std::pair<int, int>& pointer) {
+bool Autoplay::step(engine::Engine& app, std::uint32_t now, VirtualMouse& mouse) {
     if (!m_started) {
         m_started = true;
         m_last = now;
     }
+    auto release = [&] {
+        engine::InputEvent e;
+        e.x = mouse.pos.first;
+        e.y = mouse.pos.second;
+        e.type = m_held == 1 ? engine::InputEvent::LeftUp : engine::InputEvent::RightUp;
+        app.postInput(e);
+        if (m_held == 1)
+            mouse.left = false;
+        m_held = 0;
+    };
+    if (m_held && now >= m_releaseAt)
+        release();
     while (m_next < m_steps.size()) {
         const Step& s = m_steps[m_next];
         if (now - m_last < s.delay)
@@ -62,17 +74,27 @@ bool Autoplay::step(engine::Engine& app, std::uint32_t now, std::pair<int, int>&
             if (!node || app.switchPending() || s.args.empty() || !str::iequals(node->name(), s.args[0]))
                 return true;
         } else if (s.cmd == "click" || s.cmd == "rclick") {
-            pointer = {num(0), num(1)};
+            if (!m_moved) {
+                mouse.pos = {num(0), num(1)};
+                m_moved = true;
+                return true;
+            }
+            m_moved = false;
+            if (m_held)
+                release();
             const bool left = s.cmd == "click";
             engine::InputEvent e;
-            e.x = pointer.first;
-            e.y = pointer.second;
+            e.x = mouse.pos.first;
+            e.y = mouse.pos.second;
             e.type = left ? engine::InputEvent::LeftDown : engine::InputEvent::RightDown;
             app.postInput(e);
-            e.type = left ? engine::InputEvent::LeftUp : engine::InputEvent::RightUp;
-            app.postInput(e);
+            m_held = left ? 1 : 2;
+            if (left)
+                mouse.left = true;
+            const int hold = num(2);
+            m_releaseAt = now + static_cast<std::uint32_t>(hold > 0 ? hold : 150);
         } else if (s.cmd == "move") {
-            pointer = {num(0), num(1)};
+            mouse.pos = {num(0), num(1)};
         } else if (s.cmd == "key") {
             engine::InputEvent e;
             e.key = num(0);
