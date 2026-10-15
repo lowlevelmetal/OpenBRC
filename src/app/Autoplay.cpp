@@ -8,6 +8,25 @@
 #include <format>
 
 namespace brc::app {
+namespace {
+
+// The engine key code of a Windows virtual key (the keys the game handles).
+int engineKey(int vk) {
+    switch (vk) {
+    case 0x1B: return engine::key::kEscape;
+    case 0x08: return engine::key::kBackspace;
+    case 0x0D: return engine::key::kEnter;
+    case 0x2E: return engine::key::kDelete;
+    case 0x25: return engine::key::kLeft;
+    case 0x27: return engine::key::kRight;
+    case 0x26: return engine::key::kUp;
+    case 0x28: return engine::key::kDown;
+    case 0x09: return engine::key::kTab;
+    default: return 0;
+    }
+}
+
+} // namespace
 
 std::optional<Autoplay> Autoplay::parse(std::string_view script, std::filesystem::path snapDir, std::string* error) {
     Autoplay a;
@@ -100,6 +119,20 @@ bool Autoplay::step(engine::Engine& app, std::uint32_t now, VirtualMouse& mouse)
             e.key = num(0);
             e.type = engine::InputEvent::KeyDown;
             app.postInput(e);
+            e.type = engine::InputEvent::KeyUp;
+            app.postInput(e);
+        } else if (s.cmd == "vkey") {
+            // WM_KEYDOWN, WM_CHAR (when a character is given), WM_KEYUP.
+            engine::InputEvent e;
+            e.key = engineKey(num(0));
+            e.type = engine::InputEvent::KeyDown;
+            app.postInput(e);
+            if (const int ch = num(1); ch > 0 && ch < 256) {
+                engine::InputEvent c;
+                c.type = engine::InputEvent::KeyDown;
+                c.ch = static_cast<std::uint8_t>(ch);
+                app.postInput(c);
+            }
             e.type = engine::InputEvent::KeyUp;
             app.postInput(e);
         } else if (s.cmd == "type") {

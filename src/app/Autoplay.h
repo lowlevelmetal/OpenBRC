@@ -20,6 +20,8 @@ namespace brc::app {
 //   rclick <x> <y> [ms] right button
 //   move <x> <y>        move the pointer
 //   key <code>          key press and release with an engine key code (1 Esc, 3 Enter, ...)
+//   vkey <vk> [char]    key press (Windows virtual-key code, as in BarbieRecomp's
+//                       autoplay), the typed character if given, and release
 //   type <text>         typed characters
 //   snap <name>         save the 640x480 game frame as <dir>/<name>.png
 //   quit                leave the game
