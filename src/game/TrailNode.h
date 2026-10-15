@@ -206,7 +206,6 @@ protected:
     // M1..M4 helpers (TrailMissions1to4.cpp):
     void m3PlayMusic(std::string_view name); // the music switch inlined in 0x441700
 
-
     void m5LoadSounds();      // 0x442810
     void m5ReleaseSounds();   // 0x4428c0
     void m5SetupStop();       // 0x442960
@@ -236,7 +235,6 @@ protected:
     // M5..M8 helpers (TrailMissions5to8.cpp):
     void m58SwitchMusic(std::string_view name); // the music change inlined in 0x442af0, 0x442d30, 0x443130
 
-
     void r2SetupStop();       // 0x4445d0
     void r2CleanupStop();     // 0x444740
     void r2RideTick();        // 0x4447c0
@@ -259,13 +257,10 @@ protected:
     // R1..R3 helpers (TrailRescues.cpp):
     bool rescueStopFrame(std::uint32_t& frame) const; // inline in 0x4445d0 / 0x444920
 
-
     void lessonLoadSounds();  // 0x445340
     void lessonReleaseSounds(); // 0x4453b0
     void lessonRideTick();    // 0x445420
     void lessonIdleHint();    // 0x4457f0
-    // certificate and lesson helpers (TrailCertificates.cpp):
-
 
 private:
     int mission() const;      // app+0x310
