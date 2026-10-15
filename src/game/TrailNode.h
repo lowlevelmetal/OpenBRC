@@ -204,6 +204,7 @@ protected:
     void m4MouseDown(const engine::Pick& pick); // 0x4423d0
     void m4ScriptEnded(std::string_view script); // 0x4427b0
     // M1..M4 helpers (TrailMissions1to4.cpp):
+    void m3PlayMusic(std::string_view name); // the music switch inlined in 0x441700
 
 
     void m5LoadSounds();      // 0x442810

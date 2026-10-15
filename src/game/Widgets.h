@@ -101,8 +101,9 @@ public:
     ~ACRollover() override; // 0x4011f0: cursor back to sequence 0
     void spendTime() override; // 0x401290
     bool hovering() const { return m_hover; }
-    // Writes +0x14 and clears +0x18, as the trail missions do: the next pass
-    // over the anim shows the new cursor.
+    // A new cursor sequence (+0x14), with the hover state (+0x18) forgotten so
+    // the next pass shows it, as the trail missions do (M4_MouseDown 0x4423d0,
+    // M6_MouseDown 0x443710).
     void setCursorSequence(int seq) {
         m_cursorSeq = seq;
         m_hover = false;
