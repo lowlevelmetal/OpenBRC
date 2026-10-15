@@ -2,6 +2,10 @@
 
 #include "game/SmackOverlayMovie.h"
 #include "game/ToolbarNode.h"
+#include "game/TrailCertificates.h"
+#include "game/TrailMissions1to4.h"
+#include "game/TrailMissions5to8.h"
+#include "game/TrailRescues.h"
 
 #include <array>
 #include <cstdint>
@@ -32,8 +36,9 @@ class ACRollover;
 // starting trail. See docs/engine/nodes.md "TrailNode" and movies.md §4.
 //
 // Field comments give the original node offsets. The mission, certificate and
-// rescue code (0x43eca0–0x4457f0) is not ported yet: its entry points are the
-// m*/c*/r*/lesson* members (TrailMissionStubs.cpp).
+// rescue code (0x43eca0–0x4457f0) is in the m*/c*/r*/lesson* members
+// (TrailCertificates.cpp, TrailMissions1to4.cpp, TrailMissions5to8.cpp,
+// TrailRescues.cpp).
 class TrailNode : public ToolbarNode {
 public:
     // Trail ids (+0x400) and their movies: 0 aaW AppleW, 1 cwL CottageW,
@@ -143,7 +148,7 @@ protected:
     // The trail-location subclasses (0x40a2f0…) set the map location (+0x7EC).
     void setMapLocation(int location) { m_mapLocation = location; }
 
-    // --- mission, certificate and rescue code (0x43eca0–0x4457f0), not ported yet ---
+    // --- mission, certificate and rescue code (0x43eca0–0x4457f0) ---
     void c1LoadSounds();      // 0x43eca0
     void c1ReleaseSounds();   // 0x43ecd0
     void c1SetupStop();       // 0x43ed00
@@ -198,6 +203,9 @@ protected:
     void m4ReleaseSounds();   // 0x442380
     void m4MouseDown(const engine::Pick& pick); // 0x4423d0
     void m4ScriptEnded(std::string_view script); // 0x4427b0
+    // M1..M4 helpers (TrailMissions1to4.cpp):
+
+
     void m5LoadSounds();      // 0x442810
     void m5ReleaseSounds();   // 0x4428c0
     void m5SetupStop();       // 0x442960
@@ -224,6 +232,9 @@ protected:
     void m8MouseDown(const engine::Pick& pick); // 0x444570
     void m8LoadSounds();      // 0x444590
     void m8ReleaseSounds();   // 0x4445b0
+    // M5..M8 helpers (TrailMissions5to8.cpp):
+
+
     void r2SetupStop();       // 0x4445d0
     void r2CleanupStop();     // 0x444740
     void r2RideTick();        // 0x4447c0
@@ -243,10 +254,15 @@ protected:
     void r3RideTick();        // 0x445290
     void r3LoadSounds();      // 0x445300
     void r3ReleaseSounds();   // 0x445320
+    // R1..R3 helpers (TrailRescues.cpp):
+
+
     void lessonLoadSounds();  // 0x445340
     void lessonReleaseSounds(); // 0x4453b0
     void lessonRideTick();    // 0x445420
     void lessonIdleHint();    // 0x4457f0
+    // certificate and lesson helpers (TrailCertificates.cpp):
+
 
 private:
     int mission() const;      // app+0x310
@@ -410,6 +426,16 @@ private:
     int m_pagerDelay = 0;                               // +0x7F4
     bool m_pagerBusy = false;                           // +0x7F8
     std::string m_music;                                // +0x174 (toolbar): the music playing
+
+    // --- mission state shared by several groups ---
+    engine::Anim* m_exitProp = nullptr;                 // +0x6D0: `m4 cottage` or `m5 game` (click 0x2711)
+    std::unique_ptr<ACRollover> m_exitPropRollover;     // +0x6D4
+    int m_missionTrail = -1;                            // +0x7F0: trail the mission content was set up on (-1 none)
+
+    CertificateState m_cert;   // TrailCertificates.h
+    Missions1to4State m_m14;   // TrailMissions1to4.h
+    Missions5to8State m_m58;   // TrailMissions5to8.h
+    RescueState m_rescue;      // TrailRescues.h
 
     bool m_leftReleased = true;         // +0x1C0
     bool m_rightReleased = true;        // +0x1C4
