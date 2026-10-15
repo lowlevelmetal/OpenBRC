@@ -26,8 +26,8 @@ scenes land.
 | signin, intromovie | done (sign-in screens pixel-identical to the original) |
 | yard | done |
 | bulletinboard, handbook, photo album, printing | done (panels pixel-identical to the original) |
-| stable, tackroom, grooming | in progress |
-| trail rides (appleW, cottageL, bridgeS, rainbowS, rabbitE, beachE, wishingL) | in progress |
+| stable, tackroom, grooming | done |
+| trail rides (appleW, cottageL, bridgeS, rainbowS, rabbitE, beachE, wishingL) | done: riding, forks, obstacles, stops, dismount; map jumps and keyboard mode not yet compared with the original |
 | trail rides: missions, certificates and rescues | to do |
 | applesort, leapfrog, bellgame, vinegame, carousel, race | in progress |
 | opendoor, finalpayoff, credits | done |
