@@ -185,8 +185,8 @@ private:
     engine::Anim* m_youAreHereAnim = nullptr; // +0x54: Out palette only
 };
 
-// BarbieCamera (app+0x184): toolbar camera photos in `Photos/photos.omt<slot>`.
-// TODO(popups): photo storage is not ported yet; takePhoto reports failure.
+// BarbieCamera (app+0x184): toolbar camera photos in `Photos/photos.omt<slot>`
+// (Camera.cpp).
 namespace camera {
 bool takePhoto(Godiva& app);  // 0x404200: true if the photo was stored
 void deletePhotoFile(int slot); // 0x404e50

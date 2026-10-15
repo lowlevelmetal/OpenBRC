@@ -29,7 +29,7 @@ scenes land.
 | stable, tackroom, grooming | done |
 | trail rides (appleW, cottageL, bridgeS, rainbowS, rabbitE, beachE, wishingL) | done: riding, forks, obstacles, stops, dismount; map jumps and keyboard mode not yet compared with the original |
 | trail rides: missions, certificates and rescues | to do |
-| applesort, leapfrog, bellgame, vinegame, carousel, race | in progress |
+| applesort, leapfrog, bellgame, vinegame, carousel, race | done |
 | opendoor, finalpayoff, credits | done |
 | Toolbar popups: pager, map, saddlebag, camera | done |
 
