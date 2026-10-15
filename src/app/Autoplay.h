@@ -16,7 +16,8 @@ namespace brc::app {
 //   click <x> <y> [ms]  move to game pixel (x, y), press the left button on the
 //                       next pass (so rollovers see the move first, as when the
 //                       original handles WM_MOUSEMOVE in a pass of its own) and
-//                       release it after ms (default 150, like BarbieRecomp's autoplay)
+//                       release it after ms (default 150, like BarbieRecomp's autoplay;
+//                       a release that falls in a node switch is lost, as in the game)
 //   rclick <x> <y> [ms] right button
 //   move <x> <y>        move the pointer
 //   key <code>          key press and release with an engine key code (1 Esc, 3 Enter, ...)
@@ -29,6 +30,7 @@ namespace brc::app {
 struct VirtualMouse {
     std::pair<int, int> pos{320, 240};
     bool left = false;
+    int flushes = 0; // input flushes by node switches (a release due in one is lost)
 };
 
 class Autoplay {
@@ -50,6 +52,7 @@ private:
     bool m_started = false;
     bool m_moved = false;              // the current click step has moved the pointer
     int m_held = 0;                    // button being held: 0 none, 1 left, 2 right
+    int m_heldFlushes = 0;             // VirtualMouse::flushes when it was pressed
     std::uint32_t m_releaseAt = 0;
     std::filesystem::path m_dir;
 };

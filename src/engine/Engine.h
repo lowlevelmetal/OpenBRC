@@ -34,6 +34,9 @@ public:
     virtual void warpMouse(int x, int y) = 0;
     // Keep the window alive inside blocking loops (fades) without delivering input.
     virtual void keepAlive() {}
+    // Drop the keyboard and mouse input still waiting to be delivered (the
+    // PeekMessage(PM_REMOVE) loops of 0x44b3c0 after a node switch).
+    virtual void flushInput() {}
     // Sleep a little when a main-loop pass had nothing to do.
     virtual void idleSleep() {}
 };

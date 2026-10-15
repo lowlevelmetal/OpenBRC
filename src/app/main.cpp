@@ -52,6 +52,16 @@ public:
             m_mouse.warp(x, y);
     }
 
+    void flushInput() override {
+        SDL_PumpEvents();
+        for (const SDL_EventType t : {SDL_EVENT_KEY_DOWN, SDL_EVENT_KEY_UP, SDL_EVENT_TEXT_EDITING, SDL_EVENT_TEXT_INPUT,
+                                      SDL_EVENT_MOUSE_MOTION, SDL_EVENT_MOUSE_BUTTON_DOWN, SDL_EVENT_MOUSE_BUTTON_UP,
+                                      SDL_EVENT_MOUSE_WHEEL})
+            SDL_FlushEvent(t);
+        if (m_virtual)
+            ++m_virtual->flushes;
+    }
+
     void keepAlive() override {
         // Inside the fades: keep the window responsive, but leave input queued
         // (the engine drops it after the switch, as the original did).

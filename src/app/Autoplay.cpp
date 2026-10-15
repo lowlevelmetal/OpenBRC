@@ -67,11 +67,13 @@ bool Autoplay::step(engine::Engine& app, std::uint32_t now, VirtualMouse& mouse)
         m_last = now;
     }
     auto release = [&] {
-        engine::InputEvent e;
-        e.x = mouse.pos.first;
-        e.y = mouse.pos.second;
-        e.type = m_held == 1 ? engine::InputEvent::LeftUp : engine::InputEvent::RightUp;
-        app.postInput(e);
+        if (mouse.flushes == m_heldFlushes) {
+            engine::InputEvent e;
+            e.x = mouse.pos.first;
+            e.y = mouse.pos.second;
+            e.type = m_held == 1 ? engine::InputEvent::LeftUp : engine::InputEvent::RightUp;
+            app.postInput(e);
+        }
         if (m_held == 1)
             mouse.left = false;
         m_held = 0;
@@ -108,6 +110,7 @@ bool Autoplay::step(engine::Engine& app, std::uint32_t now, VirtualMouse& mouse)
             e.type = left ? engine::InputEvent::LeftDown : engine::InputEvent::RightDown;
             app.postInput(e);
             m_held = left ? 1 : 2;
+            m_heldFlushes = mouse.flushes;
             if (left)
                 mouse.left = true;
             const int hold = num(2);

@@ -119,7 +119,9 @@ void Engine::switchNode() {
     log::info("Node \"{}\" created in {} milliseconds.", name, ticks() - t0);
     if (m_node) {
         fade(false, vol);
-        m_input.clear(); // input typed during the switch is lost (0x44b3c0)
+        // Input given during the switch is lost (0x44b3c0).
+        m_input.clear();
+        m_host.flushInput();
         m_node->start();
     }
     m_switchPending = false;
