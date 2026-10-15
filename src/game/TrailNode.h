@@ -431,6 +431,7 @@ private:
     engine::Anim* m_exitProp = nullptr;                 // +0x6D0: `m4 cottage` or `m5 game` (click 0x2711)
     std::unique_ptr<ACRollover> m_exitPropRollover;     // +0x6D4
     int m_missionTrail = -1;                            // +0x7F0: trail the mission content was set up on (-1 none)
+    int m_hintTrail = 7;                                // +0x70C: trail of the last wrong-trail hint (ctor: app+0x314)
 
     CertificateState m_cert;   // TrailCertificates.h
     Missions1to4State m_m14;   // TrailMissions1to4.h
