@@ -36,13 +36,12 @@ void raceHistoryDefaults(PlayerRecord& r) {
 } // namespace
 
 void PlayerRecord::setSessionDefaults() {
-    // The original leaves some fields uninitialised here; zero is as good.
+    // Godiva::Start (0x411c70) sets only these fields; the rest (the horse
+    // names included) keep the zeroes of the freshly created application.
     bytes.fill(0);
     setName("Barbie");
     setU32(kHorse, kNoHorse);
     setU32(kSaddle, 2);
-    for (int i = 0; i < 4; ++i)
-        setS32(kHorseName + 4 * static_cast<std::size_t>(i), -1);
     raceHistoryDefaults(*this);
 }
 
