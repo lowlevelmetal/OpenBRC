@@ -623,6 +623,7 @@ TrailNode::TrailNode(Godiva& app, const std::string& name, int trailId) : Toolba
     m_walkDisabled = false;
     m_decisionAnim = nullptr;
     m_tutorialFinished = false;
+    m_hintTrail = static_cast<int>(s.missionTrail); // +0x70C = app+0x314 (after the lesson set it)
     m_gaitPlaying = false;
     setGait(0);
     m_stream = m_falls = nullptr;
