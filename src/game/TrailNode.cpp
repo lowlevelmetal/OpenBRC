@@ -10,6 +10,7 @@
 #include "engine/Font.h"
 #include "engine/Scripts.h"
 #include "engine/SoundManager.h"
+#include "game/BulletinBoard.h"
 #include "game/MiniGameFlags.h"
 #include "game/Popups.h"
 #include "game/TrailFlags.h"
@@ -1425,9 +1426,10 @@ void TrailNode::showCertificateName() {
     m_certificateText = std::make_unique<engine::TextElement>(m_certificateFont);
     m_certificateText->link(this);
     m_certificateText->setText(app().record().name());
-    const engine::Image8* img = m_certificateText->image();
-    const int w = std::min(img ? img->width : 0, 300);
-    m_certificateText->setPosition(static_cast<float>(320 - w / 2), 270.0f, m_certificate->z() + 3.0f);
+    // The element is the text plus its margin and border (0x466d40), at most
+    // 300 wide; the text is drawn inside the border.
+    const int w = nameFieldWidth(*m_certificateText);
+    placeNameField(*m_certificateText, static_cast<float>(320 - w / 2), 270.0f, m_certificate->z() + 3.0f);
 }
 
 void TrailNode::createHiddenAnim(std::string_view name) {
