@@ -233,6 +233,7 @@ protected:
     void m8LoadSounds();      // 0x444590
     void m8ReleaseSounds();   // 0x4445b0
     // M5..M8 helpers (TrailMissions5to8.cpp):
+    void m58SwitchMusic(std::string_view name); // the music change inlined in 0x442af0, 0x442d30, 0x443130
 
 
     void r2SetupStop();       // 0x4445d0
@@ -431,6 +432,7 @@ private:
     engine::Anim* m_exitProp = nullptr;                 // +0x6D0: `m4 cottage` or `m5 game` (click 0x2711)
     std::unique_ptr<ACRollover> m_exitPropRollover;     // +0x6D4
     int m_missionTrail = -1;                            // +0x7F0: trail the mission content was set up on (-1 none)
+    int m_hintTrail = 7;                                // +0x70C: trail of the last wrong-trail hint (ctor: app+0x314)
 
     CertificateState m_cert;   // TrailCertificates.h
     Missions1to4State m_m14;   // TrailMissions1to4.h
