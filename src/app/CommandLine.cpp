@@ -101,7 +101,8 @@ std::string CommandLine::usage() {
            "  --node <scene>         start in a scene (debugging)\n"
            "  --slot <n>             load saved game <n> first (debugging)\n"
            "  --dev-state <k=v,...>  set player/session fields: horse, saddle, course, control,\n"
-           "                         mission, trail, firstride, finale, debug, m1..m8, c1..c4, b1..b3\n"
+           "                         mission, trail, firstride, finale, debug, coin, wellpath, gate,\n"
+           "                         trailcert, m1..m8, c1..c4, b1..b3\n"
            "  --log <file>           also write the log to <file>\n"
            "  -v, --verbose          more log output\n"
            "  --version, --help\n";

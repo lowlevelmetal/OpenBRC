@@ -28,7 +28,7 @@ scenes land.
 | bulletinboard, handbook, photo album, printing | done (panels pixel-identical to the original) |
 | stable, tackroom, grooming | done |
 | trail rides (appleW, cottageL, bridgeS, rainbowS, rabbitE, beachE, wishingL) | done: riding, forks, obstacles, stops, dismount; map jumps and keyboard mode not yet compared with the original |
-| trail rides: missions, certificates and rescues | to do |
+| trail rides: missions M1–M8, certificates C1–C4, rescues R1–R3, riding lesson | done; not yet compared with the original: the M5 payoff, M7 after a won bell game, the wrong-trail hints, the C2 owl and hawk, the C4 award |
 | applesort, leapfrog, bellgame, vinegame, carousel, race | done |
 | opendoor, finalpayoff, credits | done |
 | Toolbar popups: pager, map, saddlebag, camera | done |

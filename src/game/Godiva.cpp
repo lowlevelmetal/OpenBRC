@@ -106,6 +106,14 @@ std::string Godiva::applyDevState(std::string_view spec) {
             m_session.missionTrail = v;
         else if (key == "debug")
             m_session.debugMode = static_cast<std::uint16_t>(v);
+        else if (key == "trailcert")
+            m_session.trailCertPending = static_cast<std::uint16_t>(v);
+        else if (key == "coin")
+            m_record.setU16(PlayerRecord::kHasCoin, static_cast<std::uint16_t>(v));
+        else if (key == "wellpath")
+            m_record.setU16(PlayerRecord::kWellPathOpen, static_cast<std::uint16_t>(v));
+        else if (key == "gate")
+            m_record.setU16(PlayerRecord::kCottageGateOpen, static_cast<std::uint16_t>(v));
         else if (!indexed('m', PlayerRecord::kMissionDone, 8) && !indexed('c', PlayerRecord::kCertificate, 4) &&
                  !indexed('b', PlayerRecord::kBadge, 3))
             return "dev state: unknown key " + key;

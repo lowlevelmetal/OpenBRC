@@ -36,7 +36,7 @@ build/bin/openbrc -v --source BRCV1_0.ISO --node stable \
 | `--node <name>` | start in that scene instead of the logos (factory names: `yard`, `stable`, `rabbitE`, …) |
 | `--skip-logos` | start at the preferences screen, as after the logos |
 | `--slot <n>` | load saved game `n` before the first scene |
-| `--dev-state k=v,…` | set player and session fields: `horse` (0 palomino, 1 white, 2 paint, 3 dapple, 4 none), `saddle`, `firstride`, `finale`, `course`, `control` (0 mouse buttons, 1 keyboard, 2 mouse motion), `mission`, `trail`, `debug`, mission counters `m1`..`m8`, certificates `c1`..`c4`, badges `b1`..`b3` |
+| `--dev-state k=v,…` | set player and session fields: `horse` (0 palomino, 1 white, 2 paint, 3 dapple, 4 none), `saddle`, `firstride`, `finale`, `course`, `control` (0 mouse buttons, 1 keyboard, 2 mouse motion), `mission`, `trail`, `debug`, `coin` (the coin is in the bag, with `m2`), `wellpath`, `gate` (the cottage gate is open), `trailcert` (the trail certificate waits at the next stop or in the yard), mission counters `m1`..`m8`, certificates `c1`..`c4`, badges `b1`..`b3` |
 
 ### Autoplay steps
 
