@@ -15,7 +15,7 @@
 # Packages:
 #   cpack                Linux: .tar.gz; macOS: .dmg; Windows: portable .zip
 #                        (with portable.txt, so settings stay next to the exe)
-#   package_installer    Windows: NSIS installer (packaging/windows/openbrc.nsi)
+#   package_installer    Windows: NSIS installer (packaging/windows/openbrc.nsi) and its .sha256
 #   cpack --config CPackSourceConfig.cmake   source tarball (never includes local/)
 
 include(GNUInstallDirs)
@@ -213,7 +213,8 @@ if(WIN32 AND TARGET openbrc)
                     "-DSOURCE_DIR=${_source_native}"
                     "-DOUTFILE=${_installer_native}"
                     "${_script_native}"
-            BYPRODUCTS "${_installer}"
+            COMMAND "${CMAKE_COMMAND}" "-DFILE=${_installer}" -P "${PROJECT_SOURCE_DIR}/cmake/WriteChecksum.cmake"
+            BYPRODUCTS "${_installer}" "${_installer}.sha256"
             WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
             COMMENT "Building ${_installer}"
             VERBATIM)

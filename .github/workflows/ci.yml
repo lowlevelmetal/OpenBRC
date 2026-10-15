@@ -129,6 +129,7 @@ jobs:
           name: openbrc-windows-x86_64
           path: |
             build/OpenBRC-*-setup.exe
+            build/OpenBRC-*-setup.exe.sha256
             build/OpenBRC-*-portable.zip
             build/OpenBRC-*-portable.zip.sha256
           if-no-files-found: error
