@@ -233,6 +233,7 @@ protected:
     void m8LoadSounds();      // 0x444590
     void m8ReleaseSounds();   // 0x4445b0
     // M5..M8 helpers (TrailMissions5to8.cpp):
+    void m58SwitchMusic(std::string_view name); // the music change inlined in 0x442af0, 0x442d30, 0x443130
 
 
     void r2SetupStop();       // 0x4445d0
