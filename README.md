@@ -99,7 +99,8 @@ re-implements both in modern C++:
 
 The behaviour of every part was worked out from the original executable with
 [REA](https://github.com/morluto/rea) and Ghidra, the OMT sources, and the BarbieRecomp
-static recompilation. The notes are in [docs/](docs/).
+static recompilation. The notes are in [docs/](docs/); [docs/testing.md](docs/testing.md) explains
+the unit tests and the scripted, headless runs used to compare scenes with the original.
 
 ## Licence
 
