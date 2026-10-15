@@ -255,6 +255,7 @@ protected:
     void r3LoadSounds();      // 0x445300
     void r3ReleaseSounds();   // 0x445320
     // R1..R3 helpers (TrailRescues.cpp):
+    bool rescueStopFrame(std::uint32_t& frame) const; // inline in 0x4445d0 / 0x444920
 
 
     void lessonLoadSounds();  // 0x445340
